@@ -1,0 +1,201 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Sample API",
+    "description": "This is a sample API to demonstrate OpenAPI specification with security and data properties.",
+    "version": "1.0.0",
+    "x-providerName": "exampleProvider",
+    "x-schemaVersion": "1.0.0",
+    "x-supportContact": "support@example.com",
+    "data": {
+      "title": "Sample API Data",
+      "description": "Detailed information about the data structure used in this API."
+    }
+  },
+  "paths": {
+    "/items": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "A list of items.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/submitAsyncAction": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitAsyncActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Action has been accepted for processing."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "callbacks": {
+          "onActionComplete": {
+            "{$request.body#/callbackUrl}": {
+              "post": {
+                "requestBody": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/ActionCompletePayload"
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Callback successfully processed."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getServiceDefinition": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Service definition retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceDefinition"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Status retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Item": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SubmitAsyncActionRequest": {
+        "type": "object",
+        "properties": {
+          "actionType": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": ["actionType", "callbackUrl"]
+      },
+      "ActionCompletePayload": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      },
+      "ServiceDefinition": {
+        "type": "object",
+        "properties": {
+          "serviceName": {
+            "type": "string"
+          },
+          "serviceVersion": {
+            "type": "string"
+          }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
