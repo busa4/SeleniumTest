@@ -3,7 +3,12 @@
   "info": {
     "title": "Sample API",
     "description": "This is a sample API to demonstrate OpenAPI specification with security and data properties.",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "x-providerName": "exampleProvider",
+    "data": {
+      "title": "Sample API Data",
+      "description": "Detailed information about the data structure used in this API."
+    }
   },
   "servers": [
     {
